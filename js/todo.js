@@ -54,10 +54,10 @@ function RemoveItem(id) {
     SaveToStore(items)
 }
 
-function ToggleCompletedState(ev, id){
+function ToggleCompletedState(ev, id) {
     let todos = LoadFromStore()
     todos.forEach(todo => {
-        if(todo.id == id) {
+        if (todo.id == id) {
             todo.isCompleted = ev.target.checked
             return
         }
@@ -78,6 +78,7 @@ function DisplayTodos(items, parent) {
         let removeBtn = document.createElement("button")
 
         subdiv.classList.add("sub-div")
+        div.classList.add("flex")
 
         tdtext.innerText = element.text
         if (element.isCompleted) {
@@ -88,7 +89,7 @@ function DisplayTodos(items, parent) {
         checkbox.checked = element.isCompleted
         checkbox.addEventListener('change', function (ev) { ToggleCompletedState(ev, element.id) }) // Todo
 
-        removeBtn.innerText = "remove"
+        removeBtn.innerText = "x"
         removeBtn.addEventListener('click', function (ev) { RemoveItem(element.id) })
 
         subdiv.appendChild(checkbox)
@@ -99,18 +100,19 @@ function DisplayTodos(items, parent) {
         div.setAttribute("todo-id", element.id)
         div.addEventListener("drop", (ev) => drop(ev))
 
-        newTodoEl.appendChild(div)
         newTodoEl.draggable = true
+        newTodoEl.appendChild(div)
         newTodoEl.addEventListener("dragover", (ev) => allowDrop(ev))
         newTodoEl.addEventListener("dragstart", (ev) => drag(ev, element.id))
+
         parent.appendChild(newTodoEl)
     });
 }
 
-function ClearDoneTodos(){
+function ClearDoneTodos() {
     let items = LoadFromStore()
     items.forEach((todo, index) => {
-        if(todo.isCompleted) {
+        if (todo.isCompleted) {
             items.splice(index, 1)
         }
     })
@@ -167,5 +169,9 @@ function drop(ev) {
     ev.preventDefault();
     var src = ev.dataTransfer.getData("text");
     var dest = ev.target.getAttribute("todo-id")
-    swap(src, dest, LoadFromStore())
+    console.log(dest)
+
+    if (dest && src) {// fixes drag and drop issues
+        swap(+src, +dest, LoadFromStore())
+    }
 }

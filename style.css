@@ -1,11 +1,29 @@
-
 .mark-done {
     text-decoration-color: grey;
     text-decoration: line-through;
 }
 
 .sub-div {
+    padding: 1px;
     display: inline-block;
-    background-color: antiquewhite;
-    margin-left: 100px;
+    background-color: rgba(179, 179, 179, 0.215);
+}
+
+li {
+    border-style: hidden;
+    margin-top: 10px;
+    padding-left: 5px;
+    width: 300px;
+}
+
+li:hover {
+    border: 2px solid rgb(170, 170, 170);
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
