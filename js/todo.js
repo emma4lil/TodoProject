@@ -7,6 +7,8 @@ let textInput = document.querySelector(".text-input")
 let saveBtn = document.querySelector(".save-btn")
 let todoParent = document.querySelector(".todo-parent")
 let deleteAll = document.querySelector(".delete-btn")
+let clearBtn = document.querySelector(".clear-btn")
+
 
 let todoItem = {
     id: 0,
@@ -18,7 +20,6 @@ let todoItem = {
 function Run() {
     Setup();
     let items = LoadFromStore();
-    itemIndex = items.length;
     DisplayTodos(items, todoParent);
 }
 
@@ -52,9 +53,21 @@ function RemoveItem(id) {
     SaveToStore(items)
 }
 
+function ToggleCompletedState(ev, id){
+    let todos = LoadFromStore()
+    todos.forEach(todo => {
+        if(todo.id == id) {
+            todo.isCompleted = ev.target.checked
+            return
+        }
+    })
+    SaveToStore(todos)
+}
+
 function DisplayTodos(items, parent) {
     parent.innerHTML = null //clears screen before rendering
     items = items.reverse() //new tod0s appears at the beginning 
+
     items.forEach(element => {
         let newTodoEl = document.createElement("li");
         let div = document.createElement("div")
@@ -62,25 +75,24 @@ function DisplayTodos(items, parent) {
         let tdtext = document.createElement("span")
         let checkbox = document.createElement("input")
         let removeBtn = document.createElement("button")
-        
+
         subdiv.classList.add("sub-div")
-        
+
         tdtext.innerText = element.text
-        if(element.isCompleted){
+        if (element.isCompleted) {
             tdtext.classList.add("mark-done")
         }
 
         checkbox.type = "checkbox"
-        checkbox.value = element.isCompleted
-        checkbox.addEventListener('', function (ev) { }) // Todo
-        
+        checkbox.checked = element.isCompleted
+        checkbox.addEventListener('change', function (ev) { ToggleCompletedState(ev, element.id) }) // Todo
 
         removeBtn.innerText = "remove"
         removeBtn.addEventListener('click', function (ev) { RemoveItem(element.id) })
 
-        div.appendChild(tdtext)
         subdiv.appendChild(checkbox)
         subdiv.appendChild(removeBtn);
+        div.appendChild(tdtext)
         div.appendChild(subdiv)
 
         div.setAttribute("todo-id", element.id)
@@ -91,12 +103,28 @@ function DisplayTodos(items, parent) {
         newTodoEl.addEventListener("dragover", (ev) => allowDrop(ev))
         newTodoEl.addEventListener("dragstart", (ev) => drag(ev, element.id))
         parent.appendChild(newTodoEl)
-
     });
+}
+
+function ClearDoneTodos(){
+    let items = LoadFromStore()
+    items.forEach((todo, index) => {
+        if(todo.isCompleted) {
+            items.splice(index, 1)
+        }
+    })
+    SaveToStore(items)
+}
+
+function DeleteAllTodos() {
+    localStorage.setItem("todos", JSON.stringify([]))
+    window.location.reload()
 }
 
 function Setup() {
     saveBtn.onclick = AddOrCreate
+    clearBtn.onclick = ClearDoneTodos
+    deleteAll.onclick = DeleteAllTodos
 }
 
 // for drag and drop
