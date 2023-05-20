@@ -1,0 +1,11 @@
+
+.mark-done {
+    text-decoration-color: grey;
+    text-decoration: line-through;
+}
+
+.sub-div {
+    display: inline-block;
+    background-color: antiquewhite;
+    margin-left: 100px;
+}
