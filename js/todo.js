@@ -28,6 +28,7 @@ function AddOrCreate(ev) {
     todoItem.text = textInput.value
     todoItem.id = new Date().getTime() // let use epoch time as id
     items.push(todoItem)
+    textInput.value = ""
     SaveToStore(items)
 }
 
